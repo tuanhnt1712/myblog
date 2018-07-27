@@ -17,7 +17,7 @@
 	</form>
 </template>
 <script>
-import axios from "axios";
+import {HTTP} from "../axios";
 
 	export default {
 		data() {
@@ -50,19 +50,33 @@ import axios from "axios";
           this.fetchData()
       },
       fetchData() {
-        debugger
         let body = {
           grant_type: "password",
           email: "tuanhnt1712@gmail.com",
           password: "12345678"
         }
-        axios.post('localhost:3000/api/auth/sign_in', body)
-                    .then(this.onSuccess)
-                    .catch(error => this.errors.record(error.response.data));
+        HTTP.post('http://localhost:3000/api/auth/sign_in', body )
+          .then((request) => {
+            this.loginSuccessful(request); 
+            alert("ok")}
+            )
+          .catch(() => this.loginFailed())
       },
-      buildURL() {
-          var p = this.params
-          return `${this.source}?column=${p.column}&direction=${p.direction}&per_page=${p.per_page}&page=${p.page}&search_column=${p.search_column}&search_operator=${p.search_operator}&search_query_1=${p.search_query_1}&search_query_2=${p.search_query_2}`
+      loginSuccessful (req) {
+        if (!req.data.token) {
+          this.loginFailed()
+          return
+        }
+
+        localStorage.token = req.data.token
+        this.error = false
+
+        this.$router.replace(this.$route.query.redirect || '/authors')
+      },
+
+      loginFailed () {
+        this.error = 'Login failed!'
+        delete localStorage.token
       }
     },
 	  name: 'Login',

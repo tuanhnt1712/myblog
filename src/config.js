@@ -12,11 +12,3 @@ Vue.use(VueRouter);
 
 window.auth = auth;
 // window.Errors = Errors;
-window.axios = axios;
-require('axios-base-url')('http://localhost:3000');
-
-window.axios.defaults.headers.common = {
-    'X-Requested-With': 'XMLHttpRequest',
-    'X-CSRF-TOKEN': cookie.parse(document.cookie)['XSRF-TOKEN'],
-    'Authorization': 'Bearer ' + localStorage.getItem('id_token'),
-};
